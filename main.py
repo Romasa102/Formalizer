@@ -2,9 +2,9 @@ import openai
 import pyperclip
 import pyautogui
 import keyboard
-clipboard_contents = pyperclip.paste()
 openai.api_key = "JUSTINCASE"
 
+clipboard_contents = pyperclip.paste()
 keyboard.press_and_release('delete')
 pyautogui.typewrite('loading...')
 response = openai.ChatCompletion.create(
