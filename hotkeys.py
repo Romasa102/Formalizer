@@ -4,7 +4,9 @@ import openai
 import pyperclip
 import pyautogui
 import keyboard
-openai.api_key = "JUSTINCASE"
+import time
+
+openai.api_key = "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"
 
 ## CHANGE ME TO TWEAK CONTROLS
 MODIFIERS = [
@@ -15,10 +17,12 @@ KEY_SHORTCUT = "\""
 MAX_DELAY = 0.5
 
 def gotEvent(ev):
+    print(ev)
+
     TOTAL_MODS = [
         NSEventModifierFlagShift,
         NSEventModifierFlagCommand,
-        NSEventModifierFlagCapsLock,
+        # NSEventModifierFlagCapsLock, fuck capslock
         NSEventModifierFlagControl,
         NSEventModifierFlagOption,
         NSEventModifierFlagNumericPad,
@@ -42,6 +46,10 @@ def gotEvent(ev):
         else:
             if flags & mod != 0:
                 return
+            
+    triggerComputation()
+
+    return
 
     #### TIME VALIDATION
     
@@ -54,21 +62,27 @@ def gotEvent(ev):
 
 def triggerComputation():
     clipboard_contents = pyperclip.paste()
-    keyboard.press_and_release('delete')
-    pyautogui.typewrite('loading...')
+
     response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "user", "content": 'make this sentence formal: ' + clipboard_contents}])
-    for x in range(0, 10):
-        keyboard.press_and_release('delete')
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": 'make this sentence formal: ' + clipboard_contents}])
+    
     res = []
     for sub in response.choices[0].message.content:
         res.append(sub.replace("\n", ""))
-    res = ''.join(res)
+    res = ''.join(res).strip("\"")
+    print(res)
     pyperclip.copy(res)
-    keyboard.press_and_release('command+v')
+    clipboard_contents = res
 
+    pyautogui.keyDown('command')
+    time.sleep(0.5)
+    pyautogui.keyDown('v')
+    time.sleep(0.5)
+    pyautogui.keyUp('v')
+    pyautogui.keyUp('command')
+    # pyautogui.hotkey('command', 'v')
 
 class HotKeyApp(NSApplication):
 
