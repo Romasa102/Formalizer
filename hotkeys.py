@@ -6,7 +6,7 @@ import pyautogui
 import keyboard
 import time
 
-openai.api_key = "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"
+openai.api_key = ""
 
 ## CHANGE ME TO TWEAK CONTROLS
 MODIFIERS = [
